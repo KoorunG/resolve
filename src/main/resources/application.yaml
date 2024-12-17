@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: resolve
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:5432/postgres
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+logging:
+  level:
+    org.hibernate.sql: debug
+    org.hibernate.type: trace
