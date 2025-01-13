@@ -14,11 +14,13 @@ private val logger = KotlinLogging.logger {  }
 class PostController {
 
     @PostMapping("/posts")
-    fun post(@RequestBody @Valid request: PostCreate, bindingResult: BindingResult): Map<String, String> {
+    fun post(@RequestBody @Valid request: PostCreate): Map<String, String> {
         val result = mutableMapOf<String, String>()
-        if(bindingResult.hasErrors()) {
-            bindingResult.fieldErrors.forEach { error -> result[error.field] = error.defaultMessage ?: "" }
-        }
+        /* 1. BindingResult를 파라미터로 받으면 ControllerAdvice 전에 먼저 걸리게 된다. */
+//        if(bindingResult.hasErrors()) {
+//            bindingResult.fieldErrors.forEach { error -> result[error.field] = error.defaultMessage ?: "" }
+//        }
+        /* 2. 응답 클래스로 Map을 리턴하기보다는, 응답 클래스를 만들어주는 것이 좋다. */
         return result
     }
 }

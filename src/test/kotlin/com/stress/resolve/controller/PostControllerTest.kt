@@ -20,10 +20,14 @@ class PostControllerTest {
         mockMvc.perform(
             post("/posts")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"title\" : \"   \", \"content\" : \"내용입니다\"}")
-        ).andExpect(status().isOk)
+                .content("{\"title\" : \"   \", \"content\" : \"   \"}")
+        ).andExpect(status().isBadRequest)
 //            .andExpect(content().string("Hello World"))
-            .andExpect(jsonPath("$.title").value("제목은 빈값이 올 수 없습니다!"))
+            .andExpect(jsonPath("$.code").value("400"))
+            .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
+            .andExpect(jsonPath("$.validation.size()").value(2))
+            .andExpect(jsonPath("$..title").value("제목은 빈값이 올 수 없습니다!"))
+            .andExpect(jsonPath("$..content").value("내용은 빈값이 올 수 없습니다!"))
             .andDo(print())
     }
 }
