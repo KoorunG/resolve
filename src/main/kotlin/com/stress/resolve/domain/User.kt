@@ -1,7 +1,7 @@
 package com.stress.resolve.domain
 
 import jakarta.persistence.*
-import java.util.UUID
+import java.util.*
 
 @Entity
 @Table(name = "users")
