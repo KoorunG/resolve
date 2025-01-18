@@ -16,7 +16,7 @@ class ExceptionController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun invalidRequestHandler(e: MethodArgumentNotValidException): ErrorResponse {
-        val errorResponse = ErrorResponse("400", "잘못된 요청입니다.")
+        val errorResponse = ErrorResponse(code = "400", message = "잘못된 요청입니다.")
         e.fieldErrors.forEach { error ->
             errorResponse.addValidation(error.field, error.defaultMessage ?: "")
         }

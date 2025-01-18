@@ -1,14 +1,14 @@
 package com.stress.resolve.controller
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.stress.resolve.repository.PostRepository
-import jakarta.transaction.Transactional
+import com.stress.resolve.request.PostCreate
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.http.MediaType
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -27,6 +27,9 @@ class PostControllerTest {
     @Autowired
     private lateinit var postRepository: PostRepository
 
+    @Autowired
+    private lateinit var mapper: ObjectMapper
+
     @BeforeEach
     fun cleanUp() {
         postRepository.deleteAll()
@@ -34,12 +37,15 @@ class PostControllerTest {
 
     @Test
     fun `POST 요청 전송 시 title값은 필수이다`() {
+        // given
+        val request = PostCreate(title = "   ", content = "   ")
+
+        // when
         mockMvc.perform(
             post("/posts")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content("{\"title\" : \"   \", \"content\" : \"   \"}")
+                .contentType(APPLICATION_JSON)
+                .content(mapper.writeValueAsString(request))
         ).andExpect(status().isBadRequest)
-//            .andExpect(content().string("Hello World"))
             .andExpect(jsonPath("$.code").value("400"))
             .andExpect(jsonPath("$.message").value("잘못된 요청입니다."))
             .andExpect(jsonPath("$.validation.size()").value(2))
@@ -54,7 +60,9 @@ class PostControllerTest {
         assertThat(postRepository.count()).isEqualTo(0L)
 
         // when
-        mockMvc.perform(post("/posts").contentType(APPLICATION_JSON).content("{\"title\" : \"제목입니다.\", \"content\" : \"내용입니다.\"}"))
+        val request = PostCreate(title = "제목입니다.", content = "내용입니다.")
+        mockMvc.perform(post("/posts").contentType(APPLICATION_JSON).content(
+            mapper.writeValueAsString(request)))
             .andExpect(status().isOk)
             .andDo(print())
 
