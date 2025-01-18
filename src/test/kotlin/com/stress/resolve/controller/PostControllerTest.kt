@@ -1,6 +1,7 @@
 package com.stress.resolve.controller
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.stress.resolve.domain.Post
 import com.stress.resolve.repository.PostRepository
 import com.stress.resolve.request.PostCreate
 import org.assertj.core.api.Assertions.assertThat
@@ -11,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -40,7 +42,7 @@ class PostControllerTest {
         // given
         val request = PostCreate(title = "   ", content = "   ")
 
-        // when
+        // when & then
         mockMvc.perform(
             post("/posts")
                 .contentType(APPLICATION_JSON)
@@ -70,5 +72,18 @@ class PostControllerTest {
         assertThat(postRepository.count()).isEqualTo(1L)
         assertThat(postRepository.findAll()).extracting("title").containsExactly("제목입니다.")
         assertThat(postRepository.findAll()).extracting("content").containsExactly("내용입니다.")
+    }
+
+    @Test
+    fun `글을 1개 조회한다`() {
+        // given
+        val post = postRepository.save(Post(title = "글 제목1", content = "글 내용1"));
+
+        // when & then
+        mockMvc.perform(get("/posts/{postId}", post.id).contentType(APPLICATION_JSON))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.title").value("글 제목1"))
+            .andExpect(jsonPath("$.content").value("글 내용1"))
+            .andDo(print())
     }
 }

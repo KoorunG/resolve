@@ -18,5 +18,5 @@ class Post(
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private val id: Long? = null
+    val id: Long? = null
 }
