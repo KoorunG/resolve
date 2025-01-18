@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.stress.resolve.domain.Post
 import com.stress.resolve.repository.PostRepository
 import com.stress.resolve.request.PostCreate
+import com.stress.resolve.service.PostService
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -22,6 +23,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 @SpringBootTest // 3-tier 테스트를 위한 애노테이션 추가
 @AutoConfigureMockMvc // mockMvc 주입을 위한 애노테이션 추가
 class PostControllerTest {
+
+    @Autowired
+    private lateinit var postService: PostService
 
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -84,6 +88,18 @@ class PostControllerTest {
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.title").value("글 제목1"))
             .andExpect(jsonPath("$.content").value("글 내용1"))
+            .andDo(print())
+    }
+
+    @Test
+    fun `title은 최대 10글자까지만 반환된다`() {
+        // given
+        val post = postRepository.save(Post(title = "10글자가 넘는 제목에 대한 테스트입니다.", content = "글 내용1"));
+
+        // when & then
+        mockMvc.perform(get("/posts/{postId}", post.id).contentType(APPLICATION_JSON))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.title").value("10글자가 넘는 제..."))
             .andDo(print())
     }
 }
