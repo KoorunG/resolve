@@ -1,6 +1,7 @@
 package com.stress.resolve.controller
 
 import com.stress.resolve.request.PostCreate
+import com.stress.resolve.response.PostResponse
 import com.stress.resolve.service.PostService
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
@@ -24,5 +25,6 @@ class PostController(
     }
 
     @GetMapping("/posts/{postId}")
-    fun get(@PathVariable(value = "postId") id: Long) = postService.get(id)
+    fun get(@PathVariable(value = "postId") id: Long): PostResponse =
+        postService.get(id)
 }
