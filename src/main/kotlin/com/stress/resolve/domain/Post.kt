@@ -1,5 +1,6 @@
 package com.stress.resolve.domain
 
+import com.stress.resolve.response.PostResponse
 import jakarta.persistence.*
 
 @Entity
@@ -19,4 +20,10 @@ class Post(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id: Long? = null
+
+    companion object {
+        // Post -> PostResponse
+        fun response(post: Post): PostResponse =
+            PostResponse(id = post.id!!, originalTitle = post.title, content = post.content)
+    }
 }

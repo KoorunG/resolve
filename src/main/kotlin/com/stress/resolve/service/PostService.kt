@@ -15,11 +15,15 @@ class PostService(
 
     @Transactional
     fun write(postCreate: PostCreate) {
-        Post(title = postCreate.title, content = postCreate.content).also { postRepository.save(it) }
+        val post = Post(title = postCreate.title, content = postCreate.content)
+        postRepository.save(post)
     }
+
+    fun getAll(): List<PostResponse> =
+        postRepository.findAll().map { Post.response(it) }
 
     fun get(id: Long): PostResponse {
         val post = postRepository.findByIdOrNull(id) ?: throw IllegalArgumentException("존재하지 않는 글입니다!")
-        return PostResponse(id = post.id!!, originalTitle = post.title, content = post.content)
+        return Post.response(post)
     }
 }

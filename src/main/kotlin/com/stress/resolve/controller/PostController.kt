@@ -24,6 +24,9 @@ class PostController(
         postService.write(request)
     }
 
+    @GetMapping("/posts")
+    fun getAll() = postService.getAll()
+
     @GetMapping("/posts/{postId}")
     fun get(@PathVariable(value = "postId") id: Long): PostResponse =
         postService.get(id)

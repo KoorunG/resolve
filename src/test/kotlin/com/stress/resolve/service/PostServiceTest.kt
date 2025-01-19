@@ -52,4 +52,18 @@ class PostServiceTest {
         assertThat(post.title).isEqualTo("제목입니다.")
         assertThat(post.content).isEqualTo("내용입니다.")
     }
+
+    @Test
+    fun `저장한 모든 글을 조회한다`() {
+        // given
+        repeat(3) { postRepository.save(Post(title = "제목입니다 ${it + 1}", content = "내용입니다 ${it + 1}"))}
+
+        // when
+        val posts = postService.getAll()
+
+        // then
+        assertThat(posts.size).isEqualTo(3)
+        assertThat(posts).extracting("title").containsExactly("제목입니다 1", "제목입니다 2", "제목입니다 3")
+        assertThat(posts).extracting("content").containsExactly("내용입니다 1", "내용입니다 2", "내용입니다 3")
+    }
 }
