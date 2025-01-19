@@ -67,8 +67,11 @@ class PostControllerTest {
 
         // when
         val request = PostCreate(title = "제목입니다.", content = "내용입니다.")
-        mockMvc.perform(post("/posts").contentType(APPLICATION_JSON).content(
-            mapper.writeValueAsString(request)))
+        mockMvc.perform(
+            post("/posts").contentType(APPLICATION_JSON).content(
+                mapper.writeValueAsString(request)
+            )
+        )
             .andExpect(status().isOk)
             .andDo(print())
 
@@ -100,6 +103,20 @@ class PostControllerTest {
         mockMvc.perform(get("/posts/{postId}", post.id).contentType(APPLICATION_JSON))
             .andExpect(status().isOk)
             .andExpect(jsonPath("$.title").value("10글자가 넘는 제..."))
+            .andDo(print())
+    }
+
+    @Test
+    fun `posts GET요청으로 모든 글을 조회한다`() {
+        // given
+        repeat(3) { postRepository.save(Post(title = "제목입니다 ${it + 1}", content = "내용입니다 ${it + 1}")) }
+
+        // when & then
+        mockMvc.perform(get("/posts").contentType(APPLICATION_JSON))
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.size()").value(3))
+            .andExpect(jsonPath("$.*.title", Matchers.containsInAnyOrder("제목입니다 1", "제목입니다 2", "제목입니다 3")))
+            .andExpect(jsonPath("$.[0].content").value("내용입니다 1")) // value()는 단일값에 대한 검증을 할때 주로 사용
             .andDo(print())
     }
 }
