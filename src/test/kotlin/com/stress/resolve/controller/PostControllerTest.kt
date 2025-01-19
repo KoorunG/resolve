@@ -6,12 +6,14 @@ import com.stress.resolve.repository.PostRepository
 import com.stress.resolve.request.PostCreate
 import com.stress.resolve.service.PostService
 import org.assertj.core.api.Assertions.assertThat
+import org.hamcrest.Matchers
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType.APPLICATION_JSON
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -20,12 +22,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
 //@WebMvcTest
+@ActiveProfiles("test")
 @SpringBootTest // 3-tier 테스트를 위한 애노테이션 추가
 @AutoConfigureMockMvc // mockMvc 주입을 위한 애노테이션 추가
 class PostControllerTest {
-
-    @Autowired
-    private lateinit var postService: PostService
 
     @Autowired
     private lateinit var mockMvc: MockMvc
