@@ -9,6 +9,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.test.context.ActiveProfiles
 
 @ActiveProfiles("test")
@@ -56,16 +58,17 @@ class PostServiceTest {
     }
 
     @Test
-    fun `저장한 모든 글을 조회한다`() {
+    fun `저장한 글 목록의 1페이지를 조회한다`() {
         // given
-        repeat(3) { postRepository.save(Post(title = "제목입니다 ${it + 1}", content = "내용입니다 ${it + 1}"))}
+        postRepository.saveAll(List(30) { Post(title = "제목입니다 ${it + 1}", content = "내용입니다 ${it + 1}") })
 
         // when
-        val posts = postService.getAll()
+        val pageable = PageRequest.of(0, 5, Sort.by("id").descending())
+        val posts = postService.getList(pageable).content
 
         // then
-        assertThat(posts.size).isEqualTo(3)
-        assertThat(posts).extracting("title").containsExactly("제목입니다 1", "제목입니다 2", "제목입니다 3")
-        assertThat(posts).extracting("content").containsExactly("내용입니다 1", "내용입니다 2", "내용입니다 3")
+        assertThat(posts.size).isEqualTo(5)
+        assertThat(posts).extracting("title").containsExactly("제목입니다 30", "제목입니다 29", "제목입니다 28", "제목입니다 27", "제목입니다 26")
+        assertThat(posts).extracting("content").containsExactly("내용입니다 30", "내용입니다 29", "내용입니다 28", "내용입니다 27", "내용입니다 26")
     }
 }

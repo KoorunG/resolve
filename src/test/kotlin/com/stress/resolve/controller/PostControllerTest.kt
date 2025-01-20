@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.stress.resolve.domain.Post
 import com.stress.resolve.repository.PostRepository
 import com.stress.resolve.request.PostCreate
-import com.stress.resolve.service.PostService
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.BeforeEach
@@ -109,14 +108,14 @@ class PostControllerTest {
     @Test
     fun `posts GET요청으로 모든 글을 조회한다`() {
         // given
-        repeat(3) { postRepository.save(Post(title = "제목입니다 ${it + 1}", content = "내용입니다 ${it + 1}")) }
+        postRepository.saveAll(List(30) { Post(title = "제목입니다 ${it + 1}", content = "내용입니다 ${it + 1}") })
 
         // when & then
-        mockMvc.perform(get("/posts").contentType(APPLICATION_JSON))
+        mockMvc.perform(get("/posts?page=1&sort=id,desc").contentType(APPLICATION_JSON))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.size()").value(3))
-            .andExpect(jsonPath("$.*.title", Matchers.containsInAnyOrder("제목입니다 1", "제목입니다 2", "제목입니다 3")))
-            .andExpect(jsonPath("$.[0].content").value("내용입니다 1")) // value()는 단일값에 대한 검증을 할때 주로 사용
+            .andExpect(jsonPath("$.content.size()").value(5))
+            .andExpect(jsonPath("$.content..title", Matchers.containsInAnyOrder("제목입니다 30", "제목입니다 29", "제목입니다 28", "제목입니다 27", "제목입니다 26")))
+            .andExpect(jsonPath("$.content..content", Matchers.containsInAnyOrder("내용입니다 30", "내용입니다 29", "내용입니다 28", "내용입니다 27", "내용입니다 26")))
             .andDo(print())
     }
 }
