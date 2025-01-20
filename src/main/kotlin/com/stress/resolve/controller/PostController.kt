@@ -4,6 +4,8 @@ import com.stress.resolve.request.PostCreate
 import com.stress.resolve.response.PostResponse
 import com.stress.resolve.service.PostService
 import jakarta.validation.Valid
+import org.springframework.data.domain.Pageable
+import org.springframework.data.web.PageableDefault
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -25,7 +27,7 @@ class PostController(
     }
 
     @GetMapping("/posts")
-    fun getAll() = postService.getAll()
+    fun getList(pageable: Pageable) = postService.getList(pageable)
 
     @GetMapping("/posts/{postId}")
     fun get(@PathVariable(value = "postId") id: Long): PostResponse =
