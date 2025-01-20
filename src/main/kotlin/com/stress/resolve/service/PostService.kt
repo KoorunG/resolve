@@ -3,6 +3,7 @@ package com.stress.resolve.service
 import com.stress.resolve.domain.Post
 import com.stress.resolve.repository.PostRepository
 import com.stress.resolve.request.PostCreate
+import com.stress.resolve.request.PostSearch
 import com.stress.resolve.response.PostResponse
 import jakarta.transaction.Transactional
 import org.springframework.data.repository.findByIdOrNull
@@ -21,10 +22,10 @@ class PostService(
 
     // 글이 많은 경우 :: 비용이 많이 든다.
     // 페이징 처리가 필요함
-    fun getList(page: Int, pageSize: Int): List<PostResponse> {
+    fun getList(postSearch: PostSearch): List<PostResponse> {
 //        return postRepository.findAll(pageable).map { Post.response(it) }
         // === Kotlin JDSL을 적용한 paging 처리 === //
-        return postRepository.getList(page = page, pageSize = pageSize).map { Post.response(it) }
+        return postRepository.getList(postSearch).map { Post.response(it) }
     }
 
 

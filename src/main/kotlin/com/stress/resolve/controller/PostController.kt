@@ -1,6 +1,7 @@
 package com.stress.resolve.controller
 
 import com.stress.resolve.request.PostCreate
+import com.stress.resolve.request.PostSearch
 import com.stress.resolve.response.PostResponse
 import com.stress.resolve.service.PostService
 import jakarta.validation.Valid
@@ -25,7 +26,7 @@ class PostController(
     }
 
     @GetMapping("/posts")
-    fun getList(@RequestParam page: Int, @RequestParam pageSize: Int) = postService.getList(page, pageSize)
+    fun getList(postSearch: PostSearch) = postService.getList(postSearch)
 
     @GetMapping("/posts/{postId}")
     fun get(@PathVariable(value = "postId") id: Long): PostResponse =

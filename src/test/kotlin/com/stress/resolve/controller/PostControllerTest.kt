@@ -111,11 +111,11 @@ class PostControllerTest {
         postRepository.saveAll(List(30) { Post(title = "제목입니다 ${it + 1}", content = "내용입니다 ${it + 1}") })
 
         // when & then
-        mockMvc.perform(get("/posts?page=1&sort=id,desc").contentType(APPLICATION_JSON))
+        mockMvc.perform(get("/posts?page=1").contentType(APPLICATION_JSON))
             .andExpect(status().isOk)
-            .andExpect(jsonPath("$.content.size()").value(5))
-            .andExpect(jsonPath("$.content..title", Matchers.containsInAnyOrder("제목입니다 30", "제목입니다 29", "제목입니다 28", "제목입니다 27", "제목입니다 26")))
-            .andExpect(jsonPath("$.content..content", Matchers.containsInAnyOrder("내용입니다 30", "내용입니다 29", "내용입니다 28", "내용입니다 27", "내용입니다 26")))
+            .andExpect(jsonPath("$.size()").value(10))
+            .andExpect(jsonPath("$..title", Matchers.containsInAnyOrder("제목입니다 30", "제목입니다 29", "제목입니다 28", "제목입니다 27", "제목입니다 26", "제목입니다 25", "제목입니다 24", "제목입니다 23", "제목입니다 22", "제목입니다 21")))
+            .andExpect(jsonPath("$..content", Matchers.containsInAnyOrder("내용입니다 30", "내용입니다 29", "내용입니다 28", "내용입니다 27", "내용입니다 26", "내용입니다 25", "내용입니다 24", "내용입니다 23", "내용입니다 22", "내용입니다 21")))
             .andDo(print())
     }
 }

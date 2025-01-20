@@ -3,6 +3,7 @@ package com.stress.resolve.service
 import com.stress.resolve.domain.Post
 import com.stress.resolve.repository.PostRepository
 import com.stress.resolve.request.PostCreate
+import com.stress.resolve.request.PostSearch
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
@@ -63,7 +64,7 @@ class PostServiceTest {
         postRepository.saveAll(List(30) { Post(title = "제목입니다 ${it + 1}", content = "내용입니다 ${it + 1}") })
 
         // when
-        val posts = postService.getList(1, 5)
+        val posts = postService.getList(PostSearch(page = 1, size = 5))
 
         // then
         assertThat(posts.size).isEqualTo(5)
