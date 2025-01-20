@@ -6,6 +6,11 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true
+        default-page-size: 5
 
   jpa:
     hibernate:
@@ -39,6 +44,12 @@ spring:
       hibernate:
         show_sql: true
         dialect: org.hibernate.dialect.H2Dialect
+  data:
+    web:
+      pageable:
+        one-indexed-parameters: true  # web 요청이 왔을 경우 페이지번호를 보정해주는 옵션
+        default-page-size: 5
+
   h2:
     console:
       enabled: true
