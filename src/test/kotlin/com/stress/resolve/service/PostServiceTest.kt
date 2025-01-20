@@ -63,8 +63,7 @@ class PostServiceTest {
         postRepository.saveAll(List(30) { Post(title = "제목입니다 ${it + 1}", content = "내용입니다 ${it + 1}") })
 
         // when
-        val pageable = PageRequest.of(0, 5, Sort.by("id").descending())
-        val posts = postService.getList(pageable).content
+        val posts = postService.getList(1, 5)
 
         // then
         assertThat(posts.size).isEqualTo(5)
