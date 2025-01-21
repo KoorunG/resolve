@@ -21,6 +21,11 @@ class Post(
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id: Long? = null
 
+    fun update(title: String? = null, content: String? = null) {
+        title?.let { this.title = it }
+        content?.let { this.content = it }
+    }
+
     companion object {
         // Post -> PostResponse
         fun response(post: Post): PostResponse =

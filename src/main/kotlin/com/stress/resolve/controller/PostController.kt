@@ -1,6 +1,7 @@
 package com.stress.resolve.controller
 
 import com.stress.resolve.request.PostCreate
+import com.stress.resolve.request.PostEdit
 import com.stress.resolve.request.PostSearch
 import com.stress.resolve.response.PostResponse
 import com.stress.resolve.service.PostService
@@ -31,4 +32,8 @@ class PostController(
     @GetMapping("/posts/{postId}")
     fun get(@PathVariable(value = "postId") id: Long): PostResponse =
         postService.get(id)
+
+    @PatchMapping("/posts/{postId}")
+    fun edit(@PathVariable(value = "postId") id: Long, @RequestBody @Valid request: PostEdit) =
+        postService.edit(id, request)
 }
