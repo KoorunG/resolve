@@ -3,6 +3,7 @@ package com.stress.resolve.service
 import com.stress.resolve.domain.Post
 import com.stress.resolve.repository.PostRepository
 import com.stress.resolve.request.PostCreate
+import com.stress.resolve.request.PostEdit
 import com.stress.resolve.request.PostSearch
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.test.context.ActiveProfiles
 
 @ActiveProfiles("test")
@@ -70,5 +72,20 @@ class PostServiceTest {
         assertThat(posts.size).isEqualTo(5)
         assertThat(posts).extracting("title").containsExactly("제목입니다 30", "제목입니다 29", "제목입니다 28", "제목입니다 27", "제목입니다 26")
         assertThat(posts).extracting("content").containsExactly("내용입니다 30", "내용입니다 29", "내용입니다 28", "내용입니다 27", "내용입니다 26")
+    }
+
+    @Test
+    fun `저장된 글의 제목을 수정한다`() {
+        // given
+        val post = Post(title = "제목입니다.", content = "내용입니다.")
+        postRepository.save(post)
+
+        // when
+        postService.edit(post.id!!, PostEdit(title = "제목1233", content = "내용 수정했습니다."))
+
+        // then
+        val changed = postRepository.findByIdOrNull(post.id) ?: throw RuntimeException("글이 존재하지 않습니다! id: ${post.id}")
+        assertThat(changed).extracting("title").isEqualTo("제목1233")
+        assertThat(changed).extracting("content").isEqualTo("내용 수정했습니다.")
     }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.stress.resolve.domain.Post
 import com.stress.resolve.repository.PostRepository
 import com.stress.resolve.request.PostCreate
+import com.stress.resolve.request.PostEdit
 import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.BeforeEach
@@ -14,8 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -116,6 +116,21 @@ class PostControllerTest {
             .andExpect(jsonPath("$.size()").value(10))
             .andExpect(jsonPath("$..title", Matchers.containsInAnyOrder("제목입니다 30", "제목입니다 29", "제목입니다 28", "제목입니다 27", "제목입니다 26", "제목입니다 25", "제목입니다 24", "제목입니다 23", "제목입니다 22", "제목입니다 21")))
             .andExpect(jsonPath("$..content", Matchers.containsInAnyOrder("내용입니다 30", "내용입니다 29", "내용입니다 28", "내용입니다 27", "내용입니다 26", "내용입니다 25", "내용입니다 24", "내용입니다 23", "내용입니다 22", "내용입니다 21")))
+            .andDo(print())
+    }
+
+    @Test
+    fun `게시글을 수정한다`(){
+        // given
+        val post = Post(title = "제목입니다", content = "내용입니다")
+        postRepository.save(post)
+
+        // when & then
+        mockMvc.perform(
+            patch("/posts/{postId}", post.id!!).contentType(APPLICATION_JSON).content(mapper.writeValueAsString(PostEdit(title = "제목만 수정함")))
+        ).andExpect(status().isOk)
+            .andExpect(jsonPath("$..title").value("제목만 수정함"))
+            .andExpect(jsonPath("$..content").value("내용입니다"))
             .andDo(print())
     }
 }
