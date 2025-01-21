@@ -38,7 +38,6 @@ dependencies {
     implementation("com.linecorp.kotlin-jdsl:jpql-dsl:$kotlinJdslVersion")
     implementation("com.linecorp.kotlin-jdsl:jpql-render:$kotlinJdslVersion")
     implementation("com.linecorp.kotlin-jdsl:spring-data-jpa-support:$kotlinJdslVersion")
-    implementation("com.linecorp.kotlin-jdsl:spring-data-jpa-javax-support:$kotlinJdslVersion")
 }
 
 kotlin {
