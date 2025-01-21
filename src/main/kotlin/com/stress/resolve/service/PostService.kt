@@ -41,4 +41,10 @@ class PostService(
         post.update(postEdit.title, postEdit.content)
         return Post.response(post)
     }
+
+    @Transactional
+    fun delete(id: Long) {
+        val post = postRepository.findByIdOrNull(id) ?: throw IllegalArgumentException("존재하지 않는 글입니다!")
+        postRepository.delete(post)
+    }
 }
