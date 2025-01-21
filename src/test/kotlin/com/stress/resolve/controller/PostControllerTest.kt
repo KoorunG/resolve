@@ -133,4 +133,16 @@ class PostControllerTest {
             .andExpect(jsonPath("$..content").value("내용입니다"))
             .andDo(print())
     }
+
+    @Test
+    fun `게시글을 삭제한다`() {
+        // given
+        val post = Post(title = "제목입니다", content = "내용입니다")
+        postRepository.save(post)
+
+        // when & then
+        mockMvc.perform(delete("/posts/{postId}", post.id!!).contentType(APPLICATION_JSON))
+            .andExpect(status().isOk)
+            .andDo(print())
+    }
 }

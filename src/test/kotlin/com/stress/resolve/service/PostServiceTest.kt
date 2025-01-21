@@ -88,4 +88,17 @@ class PostServiceTest {
         assertThat(changed).extracting("title").isEqualTo("제목1233")
         assertThat(changed).extracting("content").isEqualTo("내용 수정했습니다.")
     }
+
+    @Test
+    fun `저장된 글을 삭제한다`() {
+        // given
+        val post = Post(title = "제목입니다.", content = "내용입니다.")
+        postRepository.save(post)
+
+        // when
+        postService.delete(post.id!!)
+
+        // then
+        assertThat(postRepository.count()).isEqualTo(0L)
+    }
 }
