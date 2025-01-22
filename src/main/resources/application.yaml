@@ -1,6 +1,7 @@
 spring:
   application:
     name: resolve
+
   datasource:
     url: jdbc:postgresql://${DB_HOST}:5432/postgres
     username: ${DB_USERNAME}
@@ -26,6 +27,12 @@ logging:
     org.hibernate.sql: debug
     org.hibernate.type: trace
 
+server:
+  servlet:
+    encoding: # http 요청 시 인코딩 설정
+      charset: UTF-8
+      enabled: true
+      force: true
 ---
 spring:
   config:

@@ -1,6 +1,7 @@
 package com.stress.resolve.service
 
 import com.stress.resolve.domain.Post
+import com.stress.resolve.exception.PostNotFoundException
 import com.stress.resolve.repository.PostRepository
 import com.stress.resolve.request.PostCreate
 import com.stress.resolve.request.PostEdit
@@ -31,20 +32,20 @@ class PostService(
 
 
     fun get(id: Long): PostResponse {
-        val post = postRepository.findByIdOrNull(id) ?: throw IllegalArgumentException("존재하지 않는 글입니다!")
+        val post = postRepository.findByIdOrNull(id) ?: throw PostNotFoundException()
         return Post.response(post)
     }
 
     @Transactional
     fun edit(id: Long, postEdit: PostEdit): PostResponse {
-        val post = postRepository.findByIdOrNull(id) ?: throw IllegalArgumentException("존재하지 않는 글입니다!")
+        val post = postRepository.findByIdOrNull(id) ?: throw PostNotFoundException()
         post.update(postEdit.title, postEdit.content)
         return Post.response(post)
     }
 
     @Transactional
     fun delete(id: Long) {
-        val post = postRepository.findByIdOrNull(id) ?: throw IllegalArgumentException("존재하지 않는 글입니다!")
+        val post = postRepository.findByIdOrNull(id) ?: throw PostNotFoundException()
         postRepository.delete(post)
     }
 }
