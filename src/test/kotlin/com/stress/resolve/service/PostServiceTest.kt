@@ -1,6 +1,7 @@
 package com.stress.resolve.service
 
 import com.stress.resolve.domain.Post
+import com.stress.resolve.exception.PostNotFoundException
 import com.stress.resolve.repository.PostRepository
 import com.stress.resolve.request.PostCreate
 import com.stress.resolve.request.PostEdit
@@ -9,6 +10,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.data.domain.PageRequest
@@ -100,5 +102,38 @@ class PostServiceTest {
 
         // then
         assertThat(postRepository.count()).isEqualTo(0L)
+    }
+
+    @Test
+    fun `존재하지 않는 글 조회 시 예외가 발생한다`() {
+        // given
+        val save = postRepository.save(Post(title = "제목입니다.", content = "내용입니다."))
+
+        // when & then
+        assertThrows<PostNotFoundException> { postService.get(save.id!! + 1L) }
+            .also { assertThat(it.message).isEqualTo("존재하지 않는 글입니다!") }
+
+    }
+
+    @Test
+    fun `존재하지 않는 글 수정 시 예외가 발생한다`() {
+        // given
+        val post = Post(title = "제목입니다.", content = "내용입니다.")
+        postRepository.save(post)
+
+        // when & then
+        assertThrows<PostNotFoundException> { postService.edit(post.id!! + 1L, PostEdit(title = "제목 수정했습니다!", content = "내용 수정했습니다!")) }
+            .also { assertThat(it.message).isEqualTo("존재하지 않는 글입니다!") }
+    }
+
+    @Test
+    fun `존재하지 않는 글 삭제 시 예외가 발생한다`() {
+        // given
+        val post = Post(title = "제목입니다.", content = "내용입니다.")
+        postRepository.save(post)
+
+        // when & then
+        assertThrows<PostNotFoundException> { postService.delete(post.id!! + 1L) }
+            .also { assertThat(it.message).isEqualTo("존재하지 않는 글입니다!") }
     }
 }

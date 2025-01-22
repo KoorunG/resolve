@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType.APPLICATION_JSON
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -143,6 +144,21 @@ class PostControllerTest {
         // when & then
         mockMvc.perform(delete("/posts/{postId}", post.id!!).contentType(APPLICATION_JSON))
             .andExpect(status().isOk)
+            .andDo(print())
+    }
+
+    @Test
+    fun `존재하지 않는 글 조회 시 예외가 발생한다`() {
+        // given
+        val post = Post(title = "제목입니다", content = "내용입니다")
+        postRepository.save(post)
+
+        // when & then
+        mockMvc.perform(get("/posts/{postId}", post.id!! + 1L).contentType(APPLICATION_JSON))
+            .andExpect(status().isNotFound)
+            .andExpect(jsonPath("$.code").value("404"))
+            .andExpect(jsonPath("$.message").value("존재하지 않는 글입니다!"))
+            .andExpect(jsonPath("$.validation.size()").value(0))
             .andDo(print())
     }
 }
