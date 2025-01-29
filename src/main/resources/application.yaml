@@ -12,9 +12,6 @@ spring:
       pageable:
         one-indexed-parameters: true
         default-page-size: 5
-    redis:
-      host: localhost
-      port: 6379
 
   jpa:
     hibernate:
@@ -59,9 +56,6 @@ spring:
       pageable:
         one-indexed-parameters: true  # web 요청이 왔을 경우 페이지번호를 보정해주는 옵션
         default-page-size: 5
-    redis:
-      host: localhost
-      port: 6379
 
   h2:
     console:
